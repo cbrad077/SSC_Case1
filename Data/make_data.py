@@ -9,7 +9,7 @@ from datetime import date
 from typing import Union, List
 
 # Other
-import geopy
+from geopy import distance
 import pandas as pd
 import requests
 
@@ -88,7 +88,7 @@ def closest_weather_station(
 
     # Calculate pairwise distance between given location and each weather station
     distances = weather_stations.apply(
-        lambda x: geopy.distance.distance(
+        lambda x: distance.distance(
             (latitude, longitude), (x["LATITUDE"], x["LONGITUDE"])
         ).km,
         axis=1,
@@ -139,7 +139,12 @@ def weather_data(
     # If empty then there was no information for that date and location
     if len(weather_list) == 0:
         weather = pd.DataFrame(closest_station, index=[0])[
-            ["STATION_NAME", "CLIMATE_IDENTIFIER", "DISTANCE_WEATHER_STATION_KM"]
+            [
+                "STATION_NAME",
+                "STN_ID",
+                "CLIMATE_IDENTIFIER",
+                "DISTANCE_WEATHER_STATION_KM",
+            ]
         ]
         return weather
     else:
@@ -154,10 +159,14 @@ def weather_data(
             ],
             axis=1,
         )
+
+        # Add distance to weather station and station id
         weather.insert(
             loc=1,
             column="DISTANCE_WEATHER_STATION_KM",
             value=closest_station["DISTANCE_WEATHER_STATION_KM"],
         )
+
+        weather.insert(loc=1, column="STN_ID", value=closest_station["STN_ID"])
 
     return weather

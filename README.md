@@ -1,4 +1,4 @@
-# SSC_Case1
+# SSC_CaseStudy
 2021 Case Studies in Data Analysis Competition https://ssc.ca/en/meetings/annual/2021-annual-meeting/case-studies-competition
 
 ## Datasets 📊
